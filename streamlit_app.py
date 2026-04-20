@@ -22,8 +22,28 @@ DATA_DIR = BASE_DIR / "data" / "processed"
 REPORTS_DIR = BASE_DIR / "reports"
 
 
+def _data_fingerprint() -> tuple[tuple[str, bool, int, int], ...]:
+    paths = [
+        DATA_DIR / "ga4_sessions.csv",
+        BASE_DIR / "data" / "sample" / "ga4_sessions_sample.csv",
+        DATA_DIR / "ga4_channel_summary.csv",
+        DATA_DIR / "ga4_daily_channel_summary.csv",
+    ]
+    fingerprint = []
+    for path in paths:
+        if path.exists():
+            stat = path.stat()
+            fingerprint.append((str(path), True, stat.st_size, stat.st_mtime_ns))
+        else:
+            fingerprint.append((str(path), False, 0, 0))
+    return tuple(fingerprint)
+
+
 @st.cache_data(show_spinner=False)
-def _load_dataset() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, str, str, str | None]:
+def _load_dataset(
+    data_fingerprint: tuple[tuple[str, bool, int, int], ...],
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, str, str, str | None]:
+    _ = data_fingerprint
     dataset = load_dashboard_dataset(DATA_DIR, REPORTS_DIR)
     report_path = str(dataset.report_path) if dataset.report_path else None
     return dataset.sessions, dataset.channel_summary, dataset.daily_summary, dataset.mode, dataset.message, report_path
@@ -197,7 +217,7 @@ def main() -> None:
     )
     _inject_styles()
 
-    sessions, _, _, mode, message, report_path = _load_dataset()
+    sessions, _, _, mode, message, report_path = _load_dataset(_data_fingerprint())
 
     st.markdown(
         f"""
