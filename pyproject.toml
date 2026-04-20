@@ -9,7 +9,8 @@ description = "Conversion funnel and channel experiment analysis for the Google 
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "pandas>=2.2.0",
+  "pandas>=2.2.0,<3.0.0",
+  "streamlit>=1.33.0,<2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -25,3 +26,6 @@ merch-analysis = "google_merch_store_analysis.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.poetry]
+package-mode = false
