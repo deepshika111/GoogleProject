@@ -210,8 +210,8 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    badge_class = "real" if mode == "real" else "demo"
-    badge_label = "REAL DATA" if mode == "real" else "DEMO MODE"
+    badge_class = "real" if mode in {"real", "sample"} else "demo"
+    badge_label = "FULL REAL DATA" if mode == "real" else "REAL DATA SAMPLE" if mode == "sample" else "DEMO MODE"
     st.markdown(
         f'<div class="demo-badge {badge_class}">{badge_label}</div>',
         unsafe_allow_html=True,
@@ -244,6 +244,8 @@ def main() -> None:
         st.code("streamlit run streamlit_app.py", language="bash")
         if mode == "demo":
             st.caption("Build real outputs first with `merch-analysis build ...` to replace the demo dataset.")
+        if mode == "sample":
+            st.caption("Cloud is using a small real session sample. The full local dataset remains excluded from GitHub.")
 
     filtered_sessions = filter_sessions(
         sessions,

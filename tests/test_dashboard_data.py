@@ -32,6 +32,22 @@ def test_load_dashboard_dataset_falls_back_to_demo_when_processed_files_missing(
     assert "Processed CSVs were not found" in dataset.message
 
 
+def test_load_dashboard_dataset_uses_real_sample_when_full_processed_file_missing(tmp_path: Path) -> None:
+    sample_dir = tmp_path / "sample"
+    processed_dir = tmp_path / "processed"
+    reports_dir = tmp_path / "reports"
+    sample_dir.mkdir()
+    processed_dir.mkdir()
+    reports_dir.mkdir()
+    build_demo_sessions().head(12).to_csv(sample_dir / "ga4_sessions_sample.csv", index=False)
+
+    dataset = load_dashboard_dataset(processed_dir, reports_dir)
+
+    assert dataset.mode == "sample"
+    assert len(dataset.sessions) == 12
+    assert "real GA4 session sample" in dataset.message
+
+
 def test_filter_and_summary_functions_work_together() -> None:
     sessions = build_demo_sessions()
     filtered = filter_sessions(sessions, channels=["Organic Search"], devices=["desktop"])

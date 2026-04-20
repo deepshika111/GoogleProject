@@ -20,7 +20,12 @@ class DashboardDataset:
 
 
 def load_dashboard_dataset(data_dir: Path, reports_dir: Path | None = None) -> DashboardDataset:
-    sessions_path = data_dir / "ga4_sessions.csv"
+    sessions_path = _first_existing_path(
+        [
+            data_dir / "ga4_sessions.csv",
+            data_dir.parent / "sample" / "ga4_sessions_sample.csv",
+        ]
+    )
     channel_summary_path = data_dir / "ga4_channel_summary.csv"
     daily_summary_path = data_dir / "ga4_daily_channel_summary.csv"
     report_path = None
@@ -30,7 +35,7 @@ def load_dashboard_dataset(data_dir: Path, reports_dir: Path | None = None) -> D
         if candidate.exists():
             report_path = candidate
 
-    if sessions_path.exists():
+    if sessions_path is not None:
         sessions = pd.read_csv(sessions_path)
         sessions["session_date"] = pd.to_datetime(sessions["session_date"], errors="coerce").dt.date
         for column in ["session_start_ts", "session_end_ts"]:
@@ -61,6 +66,7 @@ def load_dashboard_dataset(data_dir: Path, reports_dir: Path | None = None) -> D
             if column in sessions.columns:
                 sessions[column] = pd.to_numeric(sessions[column], errors="coerce").fillna(0)
 
+        is_sample_data = sessions_path.name == "ga4_sessions_sample.csv"
         if channel_summary_path.exists():
             channel_summary = pd.read_csv(channel_summary_path)
         else:
@@ -76,8 +82,13 @@ def load_dashboard_dataset(data_dir: Path, reports_dir: Path | None = None) -> D
             sessions=sessions,
             channel_summary=channel_summary,
             daily_summary=daily_summary,
-            mode="real",
-            message="Loaded processed GA4 outputs from data/processed.",
+            mode="sample" if is_sample_data else "real",
+            message=(
+                "Loaded a commit-safe real GA4 session sample for Streamlit Cloud. "
+                "The full processed session file is used automatically when present locally."
+                if is_sample_data
+                else "Loaded full processed GA4 outputs from data/processed."
+            ),
             report_path=report_path,
         )
 
@@ -93,6 +104,13 @@ def load_dashboard_dataset(data_dir: Path, reports_dir: Path | None = None) -> D
         ),
         report_path=report_path,
     )
+
+
+def _first_existing_path(paths: list[Path]) -> Path | None:
+    for path in paths:
+        if path.exists():
+            return path
+    return None
 
 
 def build_demo_sessions() -> pd.DataFrame:

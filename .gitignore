@@ -8,6 +8,7 @@ __pycache__/
 
 data/raw/*.csv
 data/processed/*.csv
+!data/sample/*.csv
 reports/*.md
 !docs/*.md
 !README.md
