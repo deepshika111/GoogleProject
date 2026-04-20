@@ -1,0 +1,13 @@
+.DS_Store
+.pytest_cache/
+.venv/
+__pycache__/
+*.pyc
+*.sqlite
+*.db
+
+data/raw/*.csv
+data/processed/*.csv
+reports/*.md
+!docs/*.md
+!README.md

@@ -1,0 +1,2 @@
+[console_scripts]
+merch-analysis = google_merch_store_analysis.cli:main

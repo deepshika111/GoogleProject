@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "google-merch-funnel-analysis"
+version = "0.1.0"
+description = "Conversion funnel and channel experiment analysis for the Google Merchandise Store public datasets."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pandas>=2.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+app = [
+  "streamlit>=1.33.0",
+]
+
+[project.scripts]
+merch-analysis = "google_merch_store_analysis.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

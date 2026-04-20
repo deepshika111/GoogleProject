@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+src/google_merch_funnel_analysis.egg-info/PKG-INFO
+src/google_merch_funnel_analysis.egg-info/SOURCES.txt
+src/google_merch_funnel_analysis.egg-info/dependency_links.txt
+src/google_merch_funnel_analysis.egg-info/entry_points.txt
+src/google_merch_funnel_analysis.egg-info/requires.txt
+src/google_merch_funnel_analysis.egg-info/top_level.txt
+src/google_merch_store_analysis/__init__.py
+src/google_merch_store_analysis/__main__.py
+src/google_merch_store_analysis/cli.py
+src/google_merch_store_analysis/dashboard_data.py
+src/google_merch_store_analysis/storage.py
+src/google_merch_store_analysis/transform.py
+tests/test_dashboard_data.py
+tests/test_transform.py
